@@ -1,0 +1,85 @@
+package models
+
+import (
+	"iris/common"
+	"time"
+)
+
+type WechatUserModel struct {
+	Id         int64     `xorm:"pk Int"`
+	Wid        int64     `xorm:"wid"`
+	UserId     int64     `xorm:"user_id"`
+	Openid     string    `xorm:"varchar(64)"`
+	Nickname   string    `xorm:"varchar(64)"`
+	Sex        int       `xorm:"sex"`
+	Province   string    `xorm:"varchar(20)"`
+	City       string    `xorm:"varchar(20)"`
+	Country    string    `xorm:"varchar(20)"`
+	Language   string    `xorm:"varchar(20)"`
+	Headimgurl string    `xorm:"varchar(200)"`
+	CreatedAt  time.Time `xorm:"created"`
+	UpdatedAt  time.Time `xorm:"updated"`
+}
+
+func (wu *WechatUserModel) TableName() string {
+	return "wechat_users"
+}
+
+func (this *WechatUserModel) GetById(id int64) (*WechatUserModel, error) {
+	if id != 0 {
+		return nil, common.ErrDataGet
+	}
+	user := new(WechatUserModel)
+	user.Id = id
+	has, err := Db.Get(user)
+	if err != nil {
+		err = common.ErrDataGet
+	} else if has == false {
+		err = common.ErrDataEmpty
+	}
+	return user, err
+}
+
+func (wu *WechatUserModel) GetByWidAndOpenid(wid int64, openid string) (*WechatUserModel, error) {
+	if openid == "" || wu.Wid == 0 {
+		return nil, common.ErrDataGet
+	}
+	user := new(WechatUserModel)
+	user.Wid = wid
+	user.Openid = openid
+	has, err := Db.Get(user)
+	if err != nil {
+		return nil, common.ErrDataGet
+	} else if has == false {
+		return nil, common.ErrDataEmpty
+	}
+	return user, err
+}
+
+func (wu *WechatUserModel) LimitUnderWidList(index int, limit int) (users []*WechatUserModel, err error) {
+	err = Db.Where("wid = ?", wu.Wid).Limit(limit, (index-1)*limit).Find(&users)
+	if err != nil {
+		return nil, common.ErrDataFind
+	}
+	return users, nil
+
+}
+
+func (wu *WechatUserModel) Insert(user *WechatUserModel) (int64, error) {
+	return Db.InsertOne(user)
+}
+
+func (wu *WechatUserModel) Update(user *WechatUserModel) (int64, error) {
+	return Db.Id(user.Id).Update(user)
+}
+
+func (wu *WechatUserModel) DeleteById(id int64) bool {
+	if id == 0 {
+		return false
+	}
+	_, err := Db.Id(id).Unscoped().Delete(&WechatUserModel{})
+	if err != nil {
+		return false
+	}
+	return true
+}

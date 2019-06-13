@@ -1,0 +1,15 @@
+[application]
+  name    = "chs"
+  env     = "dev"
+  version = "1.1.0.1"
+  address = ":8888"
+  debug   = true
+
+#数据库驱动
+[database]
+    dirver = "mysql"
+
+[source]
+app_db_read  = "root1:root1@(127.0.0.1:3306)/test?charset=utf8"
+app_db_write = "root2:root2@(127.0.0.1:3306)/test?charset=utf8"
+
