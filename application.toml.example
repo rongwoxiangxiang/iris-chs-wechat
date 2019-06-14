@@ -13,3 +13,6 @@
 app_db_read  = "root1:root1@(127.0.0.1:3306)/test?charset=utf8"
 app_db_write = "root2:root2@(127.0.0.1:3306)/test?charset=utf8"
 
+[qq.ai]
+  app_id  = "745686597034"
+  app_key = "das5Bhgf3sklWxnf"

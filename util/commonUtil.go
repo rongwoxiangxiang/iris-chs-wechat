@@ -12,6 +12,7 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func StringJoin(strings ...string) string {
@@ -20,6 +21,17 @@ func StringJoin(strings ...string) string {
 		buffer.WriteString(str)
 	}
 	return buffer.String()
+}
+
+func GetRandomString(length int) string {
+	str := "123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	bytes := []byte(str)
+	result := make([]byte, length)
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	for i := 0; i < length; i++ {
+		result = append(result, bytes[r.Intn(len(bytes))])
+	}
+	return string(result)
 }
 
 func Get6RandomNumber() string {

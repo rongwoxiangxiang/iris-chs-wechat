@@ -2,10 +2,10 @@ package main
 
 import (
 	"chs/bootstrap"
-	"go-common/library/log"
+	"log"
 )
 
-func main()  {
-	log.Info("Init Application chs")
+func main() {
+	log.Println("Init Application chs")
 	bootstrap.App().Run()
 }
