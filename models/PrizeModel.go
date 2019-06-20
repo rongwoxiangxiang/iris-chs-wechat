@@ -22,14 +22,14 @@ func (this *PrizeModel) TableName() string {
 
 func (this *PrizeModel) ChooseOneUsedPrize(activityId int64, level string, idGt int64) (prize *PrizeModel, err error) {
 	if idGt > 0 {
-		Db.Where("id >= ?", idGt)
+		DbR.Where("id >= ?", idGt)
 	}
-	has, err := Db.Where("activity_id = ? AND level = ? AND used = ?", activityId, level, common.NO_VALUE).Get(prize)
+	has, err := DbR.Where("activity_id = ? AND level = ? AND used = ?", activityId, level, common.NO_VALUE).Get(prize)
 	if err != nil || has == false {
 		return nil, common.ErrDataUnExist
 	}
 	prize.Used = common.YES_VALUE
-	_, err = Db.
+	_, err = DbW.
 		Where("id = ? and used = ?", prize.Id, common.NO_VALUE).
 		Cols("used").
 		Update(prize)
@@ -40,18 +40,18 @@ func (this *PrizeModel) ChooseOneUsedPrize(activityId int64, level string, idGt 
 }
 
 func (this *PrizeModel) Insert(prize *PrizeModel) (int64, error) {
-	return Db.InsertOne(prize)
+	return DbW.InsertOne(prize)
 }
 
 func (this *PrizeModel) InsertBatch(prizes []*PrizeModel) (int64, error) {
-	return Db.Insert(&prizes)
+	return DbW.Insert(&prizes)
 }
 
 func (this *PrizeModel) DeleteById(id int64) bool {
 	if id == 0 {
 		return false
 	}
-	_, err := Db.Id(id).Unscoped().Delete(&PrizeModel{})
+	_, err := DbW.Id(id).Unscoped().Delete(&PrizeModel{})
 	if err != nil {
 		return false
 	}
@@ -62,7 +62,7 @@ func (this *PrizeModel) LimitUnderActivityList(activityId int64, index int, limi
 	if activityId == 0 || (index < 1 && limit < 1) {
 		return nil
 	}
-	err := Db.Where("acitivity_id = ?", activityId).Limit(limit, (index-1)*limit).Find(&prizes)
+	err := DbR.Where("acitivity_id = ?", activityId).Limit(limit, (index-1)*limit).Find(&prizes)
 	if err != nil {
 		return nil
 	}

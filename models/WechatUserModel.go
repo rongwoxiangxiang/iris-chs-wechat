@@ -31,7 +31,7 @@ func (this *WechatUserModel) GetById(id int64) (*WechatUserModel, error) {
 	}
 	user := new(WechatUserModel)
 	user.Id = id
-	has, err := Db.Get(user)
+	has, err := DbR.Get(user)
 	if err != nil {
 		err = common.ErrDataGet
 	} else if has == false {
@@ -47,7 +47,7 @@ func (wu *WechatUserModel) GetByWidAndOpenid(wid int64, openid string) (*WechatU
 	user := new(WechatUserModel)
 	user.Wid = wid
 	user.Openid = openid
-	has, err := Db.Get(user)
+	has, err := DbR.Get(user)
 	if err != nil {
 		return nil, common.ErrDataGet
 	} else if has == false {
@@ -57,7 +57,7 @@ func (wu *WechatUserModel) GetByWidAndOpenid(wid int64, openid string) (*WechatU
 }
 
 func (wu *WechatUserModel) LimitUnderWidList(index int, limit int) (users []*WechatUserModel, err error) {
-	err = Db.Where("wid = ?", wu.Wid).Limit(limit, (index-1)*limit).Find(&users)
+	err = DbR.Where("wid = ?", wu.Wid).Limit(limit, (index-1)*limit).Find(&users)
 	if err != nil {
 		return nil, common.ErrDataFind
 	}
@@ -66,18 +66,18 @@ func (wu *WechatUserModel) LimitUnderWidList(index int, limit int) (users []*Wec
 }
 
 func (wu *WechatUserModel) Insert(user *WechatUserModel) (int64, error) {
-	return Db.InsertOne(user)
+	return DbW.InsertOne(user)
 }
 
 func (wu *WechatUserModel) Update(user *WechatUserModel) (int64, error) {
-	return Db.Id(user.Id).Update(user)
+	return DbW.Id(user.Id).Update(user)
 }
 
 func (wu *WechatUserModel) DeleteById(id int64) bool {
 	if id == 0 {
 		return false
 	}
-	_, err := Db.Id(id).Unscoped().Delete(&WechatUserModel{})
+	_, err := DbW.Id(id).Unscoped().Delete(&WechatUserModel{})
 	if err != nil {
 		return false
 	}

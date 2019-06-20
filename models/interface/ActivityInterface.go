@@ -1,7 +1,6 @@
 package _interface
 
 import "chs/models"
-import "chs/config"
 
 type ActivityInterfaceR interface {
 	GetById(int64) *models.ActivityModel
@@ -15,11 +14,9 @@ type ActivityInterfaceW interface {
 }
 
 func GetActivityServiceR() ActivityInterfaceR {
-	models.Db = config.GetDbR(models.APP_DB_READ)
 	return new(models.ActivityModel)
 }
 
 func GetActivityServiceW() ActivityInterfaceW {
-	models.Db = config.GetDbW(models.APP_DB_WRITE)
 	return new(models.ActivityModel)
 }

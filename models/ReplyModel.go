@@ -30,7 +30,7 @@ func (r *ReplyModel) GetById(id int64) *ReplyModel {
 	if id != 0 {
 		user := new(ReplyModel)
 		user.Id = id
-		has, err := Db.Get(user)
+		has, err := DbR.Get(user)
 		if !has || err != nil {
 			return nil
 		}
@@ -50,7 +50,7 @@ func (r *ReplyModel) FindOne(model *ReplyModel) (reply *ReplyModel) {
 	if model.Wid == 0 || ("" == model.Alias && "" == model.ClickKey) {
 		return
 	}
-	qs := Db.Where("wid = ?", model.Wid)
+	qs := DbR.Where("wid = ?", model.Wid)
 	if "" != model.Alias {
 		qs = qs.Where("alias = ?", model.Alias)
 	} else if "" != r.ClickKey {
@@ -67,7 +67,7 @@ func (r *ReplyModel) LimitUnderWidList(wid int64, index int, limit int) (relpies
 	if wid == 0 || (index < 1 && limit < 1) {
 		return nil
 	}
-	err := Db.Where("wid = ?", wid).Limit(limit, (index-1)*limit).Find(&relpies)
+	err := DbR.Where("wid = ?", wid).Limit(limit, (index-1)*limit).Find(&relpies)
 	if err != nil {
 		return nil
 	}
@@ -79,12 +79,12 @@ func (r *ReplyModel) ChangeDisabledByWidActivityId(wid, activityId int64, disabl
 		return false
 	}
 	reply := ReplyModel{Wid: wid, ActivityId: activityId}
-	has, err := Db.Get(&reply)
+	has, err := DbR.Get(&reply)
 	if err != nil || has == false {
 		return false
 	}
 	reply.Disabled = disabled
-	_, err = Db.Id(reply.Id).Cols("disabled").Update(reply)
+	_, err = DbW.Id(reply.Id).Cols("disabled").Update(reply)
 	if err != nil {
 		return false
 	}
@@ -92,15 +92,15 @@ func (r *ReplyModel) ChangeDisabledByWidActivityId(wid, activityId int64, disabl
 }
 
 func (r *ReplyModel) Insert(model *ReplyModel) (int64, error) {
-	return Db.InsertOne(model)
+	return DbW.InsertOne(model)
 }
 
 func (r *ReplyModel) Update(model *ReplyModel) (int64, error) {
-	return Db.Id(model.Id).Update(model)
+	return DbW.Id(model.Id).Update(model)
 }
 
 func (r *ReplyModel) DeleteById(id int64) bool {
-	_, err := Db.Id(id).Unscoped().Delete(new(ReplyModel))
+	_, err := DbW.Id(id).Unscoped().Delete(new(ReplyModel))
 	if err != nil {
 		return false
 	}

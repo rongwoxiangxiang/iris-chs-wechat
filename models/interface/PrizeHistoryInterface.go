@@ -1,7 +1,6 @@
 package _interface
 
 import "chs/models"
-import "chs/config"
 
 type PrizeHistoryInterfaceR interface {
 	GetByActivityWuId(activityId, wuid int64) (*models.PrizeHistoryModel, error)
@@ -14,11 +13,9 @@ type PrizeHistoryInterfaceW interface {
 }
 
 func GetPrizeHistoryServiceR() PrizeHistoryInterfaceR {
-	models.Db = config.GetDbR(models.APP_DB_READ)
 	return new(models.PrizeHistoryModel)
 }
 
 func GetPrizeHistoryServiceW() PrizeHistoryInterfaceW {
-	models.Db = config.GetDbW(models.APP_DB_WRITE)
 	return new(models.PrizeHistoryModel)
 }

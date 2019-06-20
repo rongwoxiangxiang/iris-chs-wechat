@@ -1,7 +1,6 @@
 package _interface
 
 import "chs/models"
-import "chs/config"
 
 type WechatUserInterfaceR interface {
 	GetById(id int64) (*models.WechatUserModel, error)
@@ -16,11 +15,9 @@ type WechatUserInterfaceW interface {
 }
 
 func GetWechatUserServiceR() WechatUserInterfaceR {
-	models.Db = config.GetDbR(models.APP_DB_READ)
 	return new(models.WechatUserModel)
 }
 
 func GetWechatUserServiceW() WechatUserInterfaceW {
-	models.Db = config.GetDbW(models.APP_DB_WRITE)
 	return new(models.WechatUserModel)
 }

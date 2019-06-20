@@ -1,7 +1,6 @@
 package _interface
 
 import "chs/models"
-import "chs/config"
 
 type CheckinInterfaceR interface {
 	ListByWid(wid int64) []*models.CheckinModel
@@ -16,11 +15,9 @@ type CheckinInterfaceW interface {
 }
 
 func GetCheckinServiceR() CheckinInterfaceR {
-	models.Db = config.GetDbR(models.APP_DB_READ)
 	return new(models.CheckinModel)
 }
 
 func GetCheckinServiceW() CheckinInterfaceW {
-	models.Db = config.GetDbW(models.APP_DB_WRITE)
 	return new(models.CheckinModel)
 }

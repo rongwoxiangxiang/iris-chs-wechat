@@ -24,7 +24,7 @@ func (this *PrizeHistoryModel) GetByActivityWuId(activityId, wuid int64) (*Prize
 	history := new(PrizeHistoryModel)
 	history.Wuid = wuid
 	history.ActivityId = activityId
-	has, err := Db.Desc("id").Get(history)
+	has, err := DbR.Desc("id").Get(history)
 	if err != nil {
 		return nil, common.ErrDataGet
 	} else if has == false {
@@ -37,7 +37,7 @@ func (this *PrizeHistoryModel) LimitUnderActivityList(activityId int64, index in
 	if activityId == 0 || (index < 1 && limit < 1) {
 		return nil
 	}
-	err := Db.Where("acitivity_id = ?", activityId).Limit(limit, (index-1)*limit).Find(&histories)
+	err := DbR.Where("acitivity_id = ?", activityId).Limit(limit, (index-1)*limit).Find(&histories)
 	if err != nil {
 		return nil
 	}
@@ -45,14 +45,14 @@ func (this *PrizeHistoryModel) LimitUnderActivityList(activityId int64, index in
 }
 
 func (this *PrizeHistoryModel) Insert(model *PrizeHistoryModel) (int64, error) {
-	return Db.InsertOne(model)
+	return DbW.InsertOne(model)
 }
 
 func (this *PrizeHistoryModel) DeleteById(id int64) bool {
 	if id == 0 {
 		return false
 	}
-	_, err := Db.Id(id).Unscoped().Delete(&PrizeHistoryModel{})
+	_, err := DbW.Id(id).Unscoped().Delete(&PrizeHistoryModel{})
 	if err != nil {
 		return false
 	}

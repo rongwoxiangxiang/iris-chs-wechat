@@ -25,7 +25,7 @@ func (this *CheckinModel) ListByWid(wid int64) (lotteries []*CheckinModel) {
 	if wid == 0 {
 		return nil
 	}
-	err := Db.Where("wid = ?", wid).Find(&lotteries)
+	err := DbR.Where("wid = ?", wid).Find(&lotteries)
 	if err != nil {
 		return nil
 	}
@@ -46,7 +46,7 @@ func (this *CheckinModel) GetCheckinInfoByActivityIdAndWuid(activityId, wuid int
 	}
 	checkin.ActivityId = activityId
 	checkin.Wuid = wuid
-	has, err := Db.Get(checkin)
+	has, err := DbR.Get(checkin)
 	if !has || err != nil {
 		return nil, err
 	}
@@ -67,7 +67,7 @@ func (this *CheckinModel) GetCheckinByActivityWuid(activityId, wuid int64) (chec
 	}
 	checkin.ActivityId = activityId
 	checkin.Wuid = wuid
-	has, err := Db.Get(&checkin)
+	has, err := DbR.Get(&checkin)
 	if err != nil {
 		return nil, common.ErrDataGet
 	} else if !has {
@@ -77,15 +77,15 @@ func (this *CheckinModel) GetCheckinByActivityWuid(activityId, wuid int64) (chec
 }
 
 func (this *CheckinModel) Insert(checkin *CheckinModel) (int64, error) {
-	return Db.InsertOne(checkin)
+	return DbW.InsertOne(checkin)
 }
 
 func (this *CheckinModel) Update(checkin *CheckinModel) (int64, error) {
-	return Db.Id(checkin.Id).Update(checkin)
+	return DbW.Id(checkin.Id).Update(checkin)
 }
 
 func (this *CheckinModel) DeleteById(id int64) bool {
-	_, err := Db.Id(id).Unscoped().Delete(&CheckinModel{})
+	_, err := DbW.Id(id).Unscoped().Delete(&CheckinModel{})
 	if err != nil {
 		return false
 	}

@@ -28,14 +28,14 @@ func (this *LotteryModel) TableName() string {
 }
 
 func (this *LotteryModel) Insert(model *LotteryModel) (int64, error) {
-	return Db.InsertOne(model)
+	return DbW.InsertOne(model)
 }
 
 func (this *LotteryModel) DeleteById(id int64) bool {
 	if id == 0 {
 		return false
 	}
-	_, err := Db.Id(id).Unscoped().Delete(&LotteryModel{})
+	_, err := DbW.Id(id).Unscoped().Delete(&LotteryModel{})
 	if err != nil {
 		return false
 	}
@@ -73,7 +73,7 @@ func (this *LotteryModel) Luck(wid, activityId int64) (lottery *LotteryModel, er
 	}
 	claimedNum := lottery.ClaimedNum
 	lottery.ClaimedNum = claimedNum + 1
-	_, err = Db.
+	_, err = DbW.
 		Table(new(LotteryModel)).
 		Where("id = ? and claimed_num = ?", lottery.Id, claimedNum).
 		Cols("claimed_num").
@@ -88,7 +88,7 @@ func (this *LotteryModel) List(wid, activityId int64) (lotteries []*LotteryModel
 	if activityId == 0 || wid == 0 {
 		return nil
 	}
-	err := Db.Where("wid = ? and activity_id = ?", wid, activityId).Find(&lotteries)
+	err := DbR.Where("wid = ? and activity_id = ?", wid, activityId).Find(&lotteries)
 	if err != nil {
 		lotteries = nil
 	}

@@ -1,7 +1,6 @@
 package _interface
 
 import "chs/models"
-import "chs/config"
 
 type ReplyInterfaceR interface {
 	GetById(int64) *models.ReplyModel
@@ -17,11 +16,9 @@ type ReplyInterfaceW interface {
 }
 
 func GetReplyServiceR() ReplyInterfaceR {
-	models.Db = config.GetDbR(models.APP_DB_READ)
 	return new(models.ReplyModel)
 }
 
 func GetReplyServiceW() ReplyInterfaceW {
-	models.Db = config.GetDbW(models.APP_DB_WRITE)
 	return new(models.ReplyModel)
 }
