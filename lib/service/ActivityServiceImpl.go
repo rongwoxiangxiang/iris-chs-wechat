@@ -1,7 +1,7 @@
 package service
 
 import (
-	"chs/models"
+	"chs/lib/models"
 	"context"
 	"github.com/jinzhu/copier"
 )
