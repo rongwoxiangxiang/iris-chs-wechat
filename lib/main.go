@@ -30,6 +30,7 @@ func main() {
 	s := grpc.NewServer()
 	// 注册HelloService
 	service.RegisterActivityServiceServer(s, service.ActivityServiceImpl{})
+	service.RegisterCheckinServiceServer(s, service.CheckinServiceImpl{})
 	log.Println("Listen on " + Address)
 	s.Serve(listen)
 }
