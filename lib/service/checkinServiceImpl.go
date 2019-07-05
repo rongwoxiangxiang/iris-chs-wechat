@@ -16,7 +16,7 @@ func (h CheckinServiceImpl) GetById(ctx context.Context, checkin *Checkin) (*Che
 	return checkin, err
 }
 
-func (h CheckinServiceImpl) List(ctx context.Context, in *Query) (*Checkinlist, error) {
+func (h CheckinServiceImpl) List(ctx context.Context, in *CheckinQuery) (*Checkinlist, error) {
 	return nil, nil
 }
 
