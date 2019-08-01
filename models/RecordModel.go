@@ -1,6 +1,7 @@
 package models
 
 import (
+	"chs/config"
 	"time"
 )
 
@@ -18,14 +19,14 @@ func (this *RecordModel) TableName() string {
 }
 
 func (this *RecordModel) Insert(model *RecordModel) (int64, error) {
-	return DbW.InsertOne(model)
+	return config.GetDbR(APP_DB_WRITE).InsertOne(model)
 }
 
 func (this *RecordModel) GetById(id int64) *RecordModel {
 	if id != 0 {
 		record := new(RecordModel)
 		record.Id = id
-		has, err := DbR.Get(record)
+		has, err := config.GetDbR(APP_DB_READ).Get(record)
 		if !has || err != nil {
 			return nil
 		}
@@ -40,7 +41,7 @@ func (r *RecordModel) LimitUnderWidList(wid int64, index int, limit int) (record
 	if wid == 0 || (index < 1 && limit < 1) {
 		return nil
 	}
-	err := DbR.Where("wid = ?", wid).Limit(limit, (index-1)*limit).Find(&records)
+	err := config.GetDbR(APP_DB_READ).Where("wid = ?", wid).Limit(limit, (index-1)*limit).Find(&records)
 	if err != nil {
 		return nil
 	}
@@ -52,7 +53,7 @@ func (r *RecordModel) LimitUnderWuidList(wuid int64, index int, limit int) (reco
 	if wuid == 0 || (index < 1 && limit < 1) {
 		return nil
 	}
-	err := DbR.Where("wuid = ?", wuid).Limit(limit, (index-1)*limit).Find(&records)
+	err := config.GetDbR(APP_DB_READ).Where("wuid = ?", wuid).Limit(limit, (index-1)*limit).Find(&records)
 	if err != nil {
 		return nil
 	}

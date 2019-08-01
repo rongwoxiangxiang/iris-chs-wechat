@@ -26,7 +26,7 @@ func StringJoin(strings ...string) string {
 func GetRandomString(length int) string {
 	str := "123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	bytes := []byte(str)
-	result := make([]byte, length)
+	result := make([]byte, 0)
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	for i := 0; i < length; i++ {
 		result = append(result, bytes[r.Intn(len(bytes))])

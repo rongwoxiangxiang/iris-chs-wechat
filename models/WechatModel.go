@@ -1,6 +1,7 @@
 package models
 
 import (
+	"chs/config"
 	"time"
 )
 
@@ -26,14 +27,14 @@ func (w *WechatModel) TableName() string {
 }
 
 func (w *WechatModel) Insert(wechat *WechatModel) (int64, error) {
-	return DbW.InsertOne(wechat)
+	return config.GetDbR(APP_DB_READ).InsertOne(wechat)
 }
 
 func (w *WechatModel) DeleteById(id int64) bool {
 	if id == 0 {
 		return false
 	}
-	_, err := DbW.Id(id).Unscoped().Delete(&WechatModel{})
+	_, err := config.GetDbR(APP_DB_WRITE).Id(id).Unscoped().Delete(&WechatModel{})
 	if err != nil {
 		return false
 	}
@@ -44,7 +45,7 @@ func (w *WechatModel) GetById(id int64) *WechatModel {
 	if id != 0 {
 		wechat := new(WechatModel)
 		wechat.Id = id
-		has, err := DbR.Get(wechat)
+		has, err := config.GetDbR(APP_DB_READ).Get(wechat)
 		if !has || err != nil {
 			return nil
 		}
@@ -58,7 +59,7 @@ func (w *WechatModel) GetByAppid(appid string) *WechatModel {
 		return nil
 	}
 	wechat := new(WechatModel)
-	has, err := DbR.Where("appid = ?", appid).Get(wechat)
+	has, err := config.GetDbR(APP_DB_READ).Where("appid = ?", appid).Get(wechat)
 	if !has || err != nil {
 		return nil
 	}
@@ -70,7 +71,7 @@ func (w *WechatModel) GetByFlag(flag string) *WechatModel {
 		return nil
 	}
 	wechat := new(WechatModel)
-	has, err := DbR.Where("flag = ?", flag).Get(wechat)
+	has, err := config.GetDbR(APP_DB_READ).Where("flag = ?", flag).Get(wechat)
 	if !has || err != nil {
 		return nil
 	}
@@ -81,7 +82,7 @@ func (w *WechatModel) FindByGid(gid int64) (wechats []*WechatModel) {
 	if gid == 0 {
 		return nil
 	}
-	err := DbR.Where("gid = ?", gid).Find(&wechats)
+	err := config.GetDbR(APP_DB_READ).Where("gid = ?", gid).Find(&wechats)
 	if err != nil {
 		return nil
 	}

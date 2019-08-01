@@ -1,18 +1,8 @@
 package models
 
-import (
-	"chs/config"
-	"github.com/go-xorm/xorm"
-)
-
 const (
 	APP_DB_READ  = "app_db_read"
 	APP_DB_WRITE = "app_db_write"
-)
-
-var (
-	DbR *xorm.Engine = config.GetDbR(APP_DB_READ)
-	DbW *xorm.Engine = config.GetDbR(APP_DB_WRITE)
 )
 
 const (
