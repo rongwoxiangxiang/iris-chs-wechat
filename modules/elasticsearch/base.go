@@ -10,7 +10,7 @@ import (
 
 var client *elastic.Client
 
-func initEs() {
+func InitEs() {
 	if client != nil {
 		log.Println("es has already init")
 		return

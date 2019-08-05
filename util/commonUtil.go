@@ -26,7 +26,7 @@ func StringJoin(strings ...string) string {
 func GetRandomString(length int) string {
 	str := "123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	bytes := []byte(str)
-	result := make([]byte, 0)
+	result := make([]byte, 0, length)
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	for i := 0; i < length; i++ {
 		result = append(result, bytes[r.Intn(len(bytes))])
@@ -105,6 +105,15 @@ func IsEmpty(str string) bool {
 		return true
 	} else if strings.TrimSpace(str) == "" {
 		return true
+	}
+	return false
+}
+
+func CheckExistFromSlice(arr []interface{}, value interface{}) bool {
+	for _, val := range arr {
+		if val == value {
+			return true
+		}
 	}
 	return false
 }
