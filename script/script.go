@@ -20,7 +20,7 @@ func Do(method string, args []string) {
 }
 
 type ScriptFuncs struct {
-	time.Time
+	startTime time.Time
 }
 
 func (script ScriptFuncs) BashDecryptPhones(args []string) (ret interface{}) {

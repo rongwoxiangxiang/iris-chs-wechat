@@ -1,8 +1,8 @@
 package util
 
 import (
-	"api/config"
 	"bytes"
+	"chs/config"
 	"crypto/aes"
 	"crypto/cipher"
 	"encoding/hex"
@@ -15,12 +15,8 @@ type AesCryptor struct {
 	iv  []byte
 }
 
-var (
-	aesCryptorI = AesCryptor{key: []byte(config.Conf.Get("aes.key").(string)), iv: []byte(config.Conf.Get("aes.iv").(string))}
-)
-
 func GetAesCryptor() *AesCryptor {
-	return &aesCryptorI
+	return &AesCryptor{key: []byte(config.Conf.Get("aes.key").(string)), iv: []byte(config.Conf.Get("aes.iv").(string))}
 }
 
 //加密数据
@@ -61,8 +57,8 @@ func (a *AesCryptor) Decrypt(src string) (string, error) {
 }
 
 /**
-PKCS5包装
-*/
+ * PKCS5包装
+ */
 func PKCS5Padding(cipherText []byte, blockSize int) []byte {
 	padding := blockSize - len(cipherText)%blockSize
 	padText := bytes.Repeat([]byte{byte(padding)}, padding)
@@ -70,8 +66,8 @@ func PKCS5Padding(cipherText []byte, blockSize int) []byte {
 }
 
 /*
-解包装
-*/
+ * 解包装
+ */
 func PKCS5Trimming(encrypt []byte) []byte {
 	padding := encrypt[len(encrypt)-1]
 	return encrypt[:len(encrypt)-int(padding)]
