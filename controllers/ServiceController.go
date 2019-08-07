@@ -1,12 +1,12 @@
 package controllers
 
 import (
+	"chs/common"
 	"chs/controllers/Handlers"
 	"chs/models/interface"
 	"github.com/chanxuehong/wechat/mp/core"
 	"github.com/chanxuehong/wechat/mp/message/callback/request"
 	"github.com/kataras/iris"
-	"iris/common"
 )
 
 type ServiceController struct {

@@ -1,6 +1,8 @@
 package common
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type Err struct {
 	Code int    `json:"code"`

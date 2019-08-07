@@ -2,6 +2,7 @@ package models
 
 import (
 	"chs/common"
+	"chs/config"
 	"time"
 )
 
@@ -25,7 +26,7 @@ func (this *CheckinModel) ListByWid(wid int64) (lotteries []*CheckinModel) {
 	if wid == 0 {
 		return nil
 	}
-	err := DbR.Where("wid = ?", wid).Find(&lotteries)
+	err := config.GetDbR(APP_DB_READ).Where("wid = ?", wid).Find(&lotteries)
 	if err != nil {
 		return nil
 	}
@@ -46,7 +47,7 @@ func (this *CheckinModel) GetCheckinInfoByActivityIdAndWuid(activityId, wuid int
 	}
 	checkin.ActivityId = activityId
 	checkin.Wuid = wuid
-	has, err := DbR.Get(checkin)
+	has, err := config.GetDbR(APP_DB_READ).Get(checkin)
 	if !has || err != nil {
 		return nil, err
 	}
@@ -67,7 +68,7 @@ func (this *CheckinModel) GetCheckinByActivityWuid(activityId, wuid int64) (chec
 	}
 	checkin.ActivityId = activityId
 	checkin.Wuid = wuid
-	has, err := DbR.Get(&checkin)
+	has, err := config.GetDbR(APP_DB_READ).Get(&checkin)
 	if err != nil {
 		return nil, common.ErrDataGet
 	} else if !has {
@@ -77,15 +78,15 @@ func (this *CheckinModel) GetCheckinByActivityWuid(activityId, wuid int64) (chec
 }
 
 func (this *CheckinModel) Insert(checkin *CheckinModel) (int64, error) {
-	return DbW.InsertOne(checkin)
+	return config.GetDbR(APP_DB_WRITE).InsertOne(checkin)
 }
 
 func (this *CheckinModel) Update(checkin *CheckinModel) (int64, error) {
-	return DbW.Id(checkin.Id).Update(checkin)
+	return config.GetDbR(APP_DB_WRITE).Id(checkin.Id).Update(checkin)
 }
 
 func (this *CheckinModel) DeleteById(id int64) bool {
-	_, err := DbW.Id(id).Unscoped().Delete(&CheckinModel{})
+	_, err := config.GetDbR(APP_DB_WRITE).Id(id).Unscoped().Delete(&CheckinModel{})
 	if err != nil {
 		return false
 	}

@@ -9,12 +9,12 @@ import (
 )
 
 var (
-	debug bool
+	debug    bool
 	enginesR map[string]*xorm.Engine
 	enginesW map[string]*xorm.Engine
 )
 
-func SetDbDebug(debug bool)  {
+func SetDbDebug(debug bool) {
 	debug = debug
 }
 
@@ -60,6 +60,19 @@ func GetDbR(store string) *xorm.Engine {
 
 func GetDbW(store string) *xorm.Engine {
 	if engine, ok := enginesW[store]; ok == true {
+		return engine
+	}
+	return nil
+}
+
+func GetDefaultR() *xorm.Engine {
+	if engine, ok := enginesR["default_read"]; ok == true {
+		return engine
+	}
+	return nil
+}
+func GetDefaultW() *xorm.Engine {
+	if engine, ok := enginesW["default_write"]; ok == true {
 		return engine
 	}
 	return nil
