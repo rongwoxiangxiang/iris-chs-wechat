@@ -5,14 +5,27 @@
   address = ":8888"
   debug   = true
 
+[logger]
+  level = "INFO"
+  name = "application"
+
 #数据库驱动
 [database]
-    dirver = "mysql"
+  dirver = "mysql"
 
 [source]
 app_db_read  = "root1:root1@(127.0.0.1:3306)/test?charset=utf8"
 app_db_write = "root2:root2@(127.0.0.1:3306)/test?charset=utf8"
 
+[redis]
+  Addr = "127.0.0.1:6379"
+  Password = ""
+  DB = 0
+
 [qq.ai]
   app_id  = "745686597034"
   app_key = "das5Bhgf3sklWxnf"
+
+[aes]
+  key = "1231231231452035"
+  iv  = "1231231231452035"
