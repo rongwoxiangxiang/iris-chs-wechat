@@ -1,4 +1,4 @@
-package models
+package dao
 
 import (
 	"chs/common"
@@ -46,14 +46,14 @@ func (this *PrizeHistoryModel) LimitUnderActivityList(activityId int64, index in
 }
 
 func (this *PrizeHistoryModel) Insert(model *PrizeHistoryModel) (int64, error) {
-	return config.GetDbR(APP_DB_WRITE).InsertOne(model)
+	return config.GetDbW(APP_DB_WRITE).InsertOne(model)
 }
 
 func (this *PrizeHistoryModel) DeleteById(id int64) bool {
 	if id == 0 {
 		return false
 	}
-	_, err := config.GetDbR(APP_DB_WRITE).Id(id).Unscoped().Delete(&PrizeHistoryModel{})
+	_, err := config.GetDbW(APP_DB_WRITE).Id(id).Unscoped().Delete(&PrizeHistoryModel{})
 	if err != nil {
 		return false
 	}

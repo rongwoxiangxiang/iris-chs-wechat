@@ -1,4 +1,4 @@
-package models
+package dao
 
 import (
 	"chs/config"
@@ -19,7 +19,7 @@ func (this *RecordModel) TableName() string {
 }
 
 func (this *RecordModel) Insert(model *RecordModel) (int64, error) {
-	return config.GetDbR(APP_DB_WRITE).InsertOne(model)
+	return config.GetDbW(APP_DB_WRITE).InsertOne(model)
 }
 
 func (this *RecordModel) GetById(id int64) *RecordModel {

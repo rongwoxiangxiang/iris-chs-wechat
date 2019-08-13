@@ -1,4 +1,4 @@
-package models
+package dao
 
 import (
 	"chs/common"
@@ -42,7 +42,7 @@ func (this *WechatUserModel) GetById(id int64) (*WechatUserModel, error) {
 }
 
 func (wu *WechatUserModel) GetByWidAndOpenid(wid int64, openid string) (*WechatUserModel, error) {
-	if openid == "" || wu.Wid == 0 {
+	if openid == "" || wid == 0 {
 		return nil, common.ErrDataGet
 	}
 	user := new(WechatUserModel)
@@ -67,18 +67,18 @@ func (wu *WechatUserModel) LimitUnderWidList(index int, limit int) (users []*Wec
 }
 
 func (wu *WechatUserModel) Insert(user *WechatUserModel) (int64, error) {
-	return config.GetDbR(APP_DB_WRITE).InsertOne(user)
+	return config.GetDbW(APP_DB_WRITE).InsertOne(user)
 }
 
 func (wu *WechatUserModel) Update(user *WechatUserModel) (int64, error) {
-	return config.GetDbR(APP_DB_WRITE).Id(user.Id).Update(user)
+	return config.GetDbW(APP_DB_WRITE).Id(user.Id).Update(user)
 }
 
 func (wu *WechatUserModel) DeleteById(id int64) bool {
 	if id == 0 {
 		return false
 	}
-	_, err := config.GetDbR(APP_DB_WRITE).Id(id).Unscoped().Delete(&WechatUserModel{})
+	_, err := config.GetDbW(APP_DB_WRITE).Id(id).Unscoped().Delete(&WechatUserModel{})
 	if err != nil {
 		return false
 	}

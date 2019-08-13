@@ -1,4 +1,4 @@
-package models
+package dao
 
 import (
 	"chs/config"
@@ -48,18 +48,18 @@ func (this *ActivityModel) LimitUnderWidList(index, limit, wid int) (activities 
 }
 
 func (this *ActivityModel) Insert(activity *ActivityModel) (int64, error) {
-	return config.GetDbR(APP_DB_WRITE).InsertOne(activity)
+	return config.GetDbW(APP_DB_WRITE).InsertOne(activity)
 }
 
 func (this *ActivityModel) Update(activity *ActivityModel) (int64, error) {
-	return config.GetDbR(APP_DB_WRITE).Id(activity.Id).Update(activity)
+	return config.GetDbW(APP_DB_WRITE).Id(activity.Id).Update(activity)
 }
 
 func (this *ActivityModel) DeleteById(id int64) bool {
 	if id < 1 {
 		return false
 	}
-	_, err := config.GetDbR(APP_DB_WRITE).Id(id).Unscoped().Delete(&ActivityModel{})
+	_, err := config.GetDbW(APP_DB_WRITE).Id(id).Unscoped().Delete(&ActivityModel{})
 	if err != nil {
 		return false
 	}

@@ -1,4 +1,4 @@
-package models
+package dao
 
 import (
 	"chs/common"
@@ -47,9 +47,9 @@ func (r *ReplyModel) GetById(id int64) *ReplyModel {
  * @Param Reply.ClickKey string
  * @Success Reply
  */
-func (r *ReplyModel) FindOne(model *ReplyModel) (reply *ReplyModel) {
+func (r *ReplyModel) FindOne(model *ReplyModel) *ReplyModel {
 	if model.Wid == 0 || ("" == model.Alias && "" == model.ClickKey) {
-		return
+		return nil
 	}
 	qs := config.GetDbR(APP_DB_READ).Where("wid = ?", model.Wid)
 	if "" != model.Alias {
@@ -57,11 +57,12 @@ func (r *ReplyModel) FindOne(model *ReplyModel) (reply *ReplyModel) {
 	} else if "" != r.ClickKey {
 		qs = qs.Where("click_key = ?", model.ClickKey)
 	}
+	reply := new(ReplyModel)
 	has, err := qs.Where("disabled = ?", common.NO_VALUE).Get(reply)
 	if !has || err != nil {
 		return nil
 	}
-	return
+	return reply
 }
 
 func (r *ReplyModel) LimitUnderWidList(wid int64, index int, limit int) (relpies []*ReplyModel) {
@@ -85,7 +86,7 @@ func (r *ReplyModel) ChangeDisabledByWidActivityId(wid, activityId int64, disabl
 		return false
 	}
 	reply.Disabled = disabled
-	_, err = config.GetDbR(APP_DB_WRITE).Id(reply.Id).Cols("disabled").Update(reply)
+	_, err = config.GetDbW(APP_DB_WRITE).Id(reply.Id).Cols("disabled").Update(reply)
 	if err != nil {
 		return false
 	}
@@ -93,15 +94,15 @@ func (r *ReplyModel) ChangeDisabledByWidActivityId(wid, activityId int64, disabl
 }
 
 func (r *ReplyModel) Insert(model *ReplyModel) (int64, error) {
-	return config.GetDbR(APP_DB_WRITE).InsertOne(model)
+	return config.GetDbW(APP_DB_WRITE).InsertOne(model)
 }
 
 func (r *ReplyModel) Update(model *ReplyModel) (int64, error) {
-	return config.GetDbR(APP_DB_WRITE).Id(model.Id).Update(model)
+	return config.GetDbW(APP_DB_WRITE).Id(model.Id).Update(model)
 }
 
 func (r *ReplyModel) DeleteById(id int64) bool {
-	_, err := config.GetDbR(APP_DB_WRITE).Id(id).Unscoped().Delete(new(ReplyModel))
+	_, err := config.GetDbW(APP_DB_WRITE).Id(id).Unscoped().Delete(new(ReplyModel))
 	if err != nil {
 		return false
 	}

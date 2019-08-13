@@ -1,4 +1,4 @@
-package models
+package dao
 
 import (
 	"chs/common"
@@ -29,14 +29,14 @@ func (this *LotteryModel) TableName() string {
 }
 
 func (this *LotteryModel) Insert(model *LotteryModel) (int64, error) {
-	return config.GetDbR(APP_DB_WRITE).InsertOne(model)
+	return config.GetDbW(APP_DB_WRITE).InsertOne(model)
 }
 
 func (this *LotteryModel) DeleteById(id int64) bool {
 	if id == 0 {
 		return false
 	}
-	_, err := config.GetDbR(APP_DB_WRITE).Id(id).Unscoped().Delete(&LotteryModel{})
+	_, err := config.GetDbW(APP_DB_WRITE).Id(id).Unscoped().Delete(&LotteryModel{})
 	if err != nil {
 		return false
 	}
@@ -74,7 +74,7 @@ func (this *LotteryModel) Luck(wid, activityId int64) (lottery *LotteryModel, er
 	}
 	claimedNum := lottery.ClaimedNum
 	lottery.ClaimedNum = claimedNum + 1
-	_, err = config.GetDbR(APP_DB_WRITE).
+	_, err = config.GetDbW(APP_DB_WRITE).
 		Table(new(LotteryModel)).
 		Where("id = ? and claimed_num = ?", lottery.Id, claimedNum).
 		Cols("claimed_num").

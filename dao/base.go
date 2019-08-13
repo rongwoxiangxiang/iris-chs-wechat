@@ -1,4 +1,4 @@
-package models
+package dao
 
 const (
 	APP_DB_READ  = "app_db_read"

@@ -1,4 +1,4 @@
-package models
+package dao
 
 import (
 	"chs/common"
@@ -21,7 +21,7 @@ func (this *PrizeModel) TableName() string {
 	return "prizes"
 }
 
-func (this *PrizeModel) ChooseOneUsedPrize(activityId int64, level string, idGt int64) (prize *PrizeModel, err error) {
+func (this *PrizeModel) ChooseOneUsedPrize(activityId int64, level int8, idGt int64) (prize *PrizeModel, err error) {
 	if idGt > 0 {
 		config.GetDbR(APP_DB_READ).Where("id >= ?", idGt)
 	}
@@ -30,7 +30,7 @@ func (this *PrizeModel) ChooseOneUsedPrize(activityId int64, level string, idGt 
 		return nil, common.ErrDataUnExist
 	}
 	prize.Used = common.YES_VALUE
-	_, err = config.GetDbR(APP_DB_WRITE).
+	_, err = config.GetDbW(APP_DB_WRITE).
 		Where("id = ? and used = ?", prize.Id, common.NO_VALUE).
 		Cols("used").
 		Update(prize)
@@ -41,18 +41,18 @@ func (this *PrizeModel) ChooseOneUsedPrize(activityId int64, level string, idGt 
 }
 
 func (this *PrizeModel) Insert(prize *PrizeModel) (int64, error) {
-	return config.GetDbR(APP_DB_WRITE).InsertOne(prize)
+	return config.GetDbW(APP_DB_WRITE).InsertOne(prize)
 }
 
 func (this *PrizeModel) InsertBatch(prizes []*PrizeModel) (int64, error) {
-	return config.GetDbR(APP_DB_WRITE).Insert(&prizes)
+	return config.GetDbW(APP_DB_WRITE).Insert(&prizes)
 }
 
 func (this *PrizeModel) DeleteById(id int64) bool {
 	if id == 0 {
 		return false
 	}
-	_, err := config.GetDbR(APP_DB_WRITE).Id(id).Unscoped().Delete(&PrizeModel{})
+	_, err := config.GetDbW(APP_DB_WRITE).Id(id).Unscoped().Delete(&PrizeModel{})
 	if err != nil {
 		return false
 	}

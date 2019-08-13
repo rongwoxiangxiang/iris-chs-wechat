@@ -2,29 +2,29 @@ package controllers
 
 import (
 	"chs/common"
-	"chs/controllers/Handlers"
-	"chs/models/interface"
+	"chs/dao"
 	"github.com/chanxuehong/wechat/mp/core"
+	"github.com/chanxuehong/wechat/mp/menu"
 	"github.com/chanxuehong/wechat/mp/message/callback/request"
 	"github.com/kataras/iris"
 )
 
-type ServiceController struct {
-	Ctx iris.Context
-}
-
 var (
 	msgHandler core.Handler
 	msgServers map[string]*core.Server
+	wechats    map[string]int64
 )
 
 func init() {
 	mux := core.NewServeMux()
 	msgHandler = mux
-	mux.DefaultMsgHandleFunc(Handlers.DefaultMsgHandler)
-	mux.DefaultEventHandleFunc(Handlers.DefaultEventHandler)
-	mux.MsgHandleFunc(request.MsgTypeText, Handlers.DefaultTextMsgHandler)
+	mux.UseFunc(onStart)
+	mux.DefaultMsgHandleFunc(defaultMsgHandler)
+	mux.DefaultEventHandleFunc(defaultEventHandler)
+	mux.MsgHandleFunc(request.MsgTypeText, textMsgHandler, defaultTextMsgHandler)
+	mux.EventHandleFunc(menu.EventTypeClick, menuClickEventHandler)
 	msgServers = make(map[string]*core.Server)
+	wechats = make(map[string]int64)
 }
 
 func Service(ctx iris.Context) {
@@ -34,21 +34,23 @@ func Service(ctx iris.Context) {
 		ctx.Application().Logger().Warn("Wechat service get mp server err wechat flag : %v", flag)
 		return
 	}
-	msgServer.ServeHTTP(ctx.ResponseWriter(), ctx.Request(), nil)
+	query := ctx.Request().URL.Query()
+	query.Add("flag", flag)
+	msgServer.ServeHTTP(ctx.ResponseWriter(), ctx.Request(), query)
 }
 
 func getMsgServer(flag string) *core.Server {
 	if service, ok := msgServers[flag]; ok == true {
 		return service
 	}
-	wechat := _interface.GetWechatServiceR().GetByFlag(flag)
+	wechat := dao.GetWechatServiceR().GetByFlag(flag)
 	if wechat == nil {
 		return nil
 	}
+	wechats[flag] = wechat.Id
 	msgServer := core.NewServer("", wechat.Appid, wechat.Token, wechat.EncodingAesKey, msgHandler, nil)
 	if wechat.NeedSaveMen != common.NO_VALUE {
 		msgServers[flag] = msgServer
 	}
-
 	return msgServer
 }

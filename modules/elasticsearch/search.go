@@ -9,7 +9,7 @@ import (
 	"log"
 )
 
-func Match(alias string, wid int64) (reply *models.ReplyModel) {
+func Match(alias string, wid int64) (reply *dao.ReplyModel) {
 	var (
 		res       *elastic.SearchResult
 		boolQuery *elastic.BoolQuery

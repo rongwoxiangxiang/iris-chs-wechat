@@ -1,4 +1,4 @@
-package models
+package dao
 
 import (
 	"chs/config"
@@ -27,14 +27,14 @@ func (w *WechatModel) TableName() string {
 }
 
 func (w *WechatModel) Insert(wechat *WechatModel) (int64, error) {
-	return config.GetDbR(APP_DB_READ).InsertOne(wechat)
+	return config.GetDbW(APP_DB_READ).InsertOne(wechat)
 }
 
 func (w *WechatModel) DeleteById(id int64) bool {
 	if id == 0 {
 		return false
 	}
-	_, err := config.GetDbR(APP_DB_WRITE).Id(id).Unscoped().Delete(&WechatModel{})
+	_, err := config.GetDbW(APP_DB_WRITE).Id(id).Unscoped().Delete(&WechatModel{})
 	if err != nil {
 		return false
 	}

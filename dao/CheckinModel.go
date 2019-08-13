@@ -1,4 +1,4 @@
-package models
+package dao
 
 import (
 	"chs/common"
@@ -78,15 +78,15 @@ func (this *CheckinModel) GetCheckinByActivityWuid(activityId, wuid int64) (chec
 }
 
 func (this *CheckinModel) Insert(checkin *CheckinModel) (int64, error) {
-	return config.GetDbR(APP_DB_WRITE).InsertOne(checkin)
+	return config.GetDbW(APP_DB_WRITE).InsertOne(checkin)
 }
 
 func (this *CheckinModel) Update(checkin *CheckinModel) (int64, error) {
-	return config.GetDbR(APP_DB_WRITE).Id(checkin.Id).Update(checkin)
+	return config.GetDbW(APP_DB_WRITE).Id(checkin.Id).Update(checkin)
 }
 
 func (this *CheckinModel) DeleteById(id int64) bool {
-	_, err := config.GetDbR(APP_DB_WRITE).Id(id).Unscoped().Delete(&CheckinModel{})
+	_, err := config.GetDbW(APP_DB_WRITE).Id(id).Unscoped().Delete(&CheckinModel{})
 	if err != nil {
 		return false
 	}
