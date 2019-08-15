@@ -18,6 +18,9 @@ var (
 
 func onStart(ctx *core.Context) {
 	setWechatUser(ctx.QueryParams.Get("flag"), ctx.MixedMsg.FromUserName)
+	if wxUser == nil {
+		panic("onStart.setWechatUser err")
+	}
 	go func() {
 		updateWxUserInfo(wxUser)
 		insertRecord(wxUser, ctx.MixedMsg)
@@ -73,9 +76,11 @@ func setWechatUser(flag, openId string) {
 	wid := wechats[flag]
 	userWx, _ := dao.GetWechatUserServiceR().GetByWidAndOpenid(wid, openId)
 	if userWx == nil {
-		userWx := &dao.WechatUserModel{Openid: openId, Wid: wid}
-		id, _ := dao.GetWechatUserServiceW().Insert(userWx)
-		userWx.Id = id
+		userWx = &dao.WechatUserModel{Openid: openId, Wid: wid}
+		_, err := dao.GetWechatUserServiceW().Insert(userWx)
+		if err != nil {
+			userWx = nil
+		}
 	}
 	wxUser = userWx
 }

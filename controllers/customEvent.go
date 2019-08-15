@@ -32,7 +32,7 @@ func responseTextAndClick(reply *dao.ReplyModel, header core.MsgHeader) (msg *re
 
 func doReplyCode(reply *dao.ReplyModel) string {
 	history, _ := dao.GetPrizeHistoryServiceR().GetByActivityWuId(reply.ActivityId, wxUser.Id)
-	if history.Code != "" {
+	if history != nil && history.Code != "" {
 		return strings.Replace(reply.Success, "%code%", history.Code, 1)
 	}
 	prize, err := (dao.GetPrizeServiceW().ChooseOneUsedPrize(reply.ActivityId, dao.PRIZE_LEVEL_DEFAULT, 0))
@@ -89,22 +89,22 @@ func doReplyLucky(reply *dao.ReplyModel) string {
 	}
 	history, _ := dao.GetPrizeHistoryServiceR().GetByActivityWuId(reply.ActivityId, wxUser.Id)
 	if activity.ActivityType == dao.ACTIVITY_TYPE_LUCK_CHECKIN { //签到抽奖，验证签到条件是否满足
-		if history.Prize != "" {
+		if history != nil && history.Prize != "" {
 			return strings.NewReplacer("%prize%", history.Prize, "%code%", history.Code).Replace(reply.Success)
 		}
 		checkin, err := dao.GetCheckinServiceR().GetCheckinInfoByActivityIdAndWuid(activity.RelativeId, wxUser.Id)
 		if err != nil {
 			return reply.Fail
 		}
-		if need, _ := strconv.ParseInt(activity.Extra, 10, 64); checkin.Total < need {
+		if need, _ := strconv.ParseInt(activity.Extra, 10, 64); checkin != nil && checkin.Total < need {
 			return reply.Fail
 		}
 	} else if activity.ActivityType == dao.ACTIVITY_TYPE_LUCK_EVERYDAY { //每日抽奖，验证今日是否已经获取
-		if history.CreatedAt.Format("2006-01-02") == time.Now().Format("2006-01-02") {
+		if history != nil && history.CreatedAt.Format("2006-01-02") == time.Now().Format("2006-01-02") {
 			return strings.NewReplacer("%prize%", history.Prize, "%code%", history.Code).Replace(reply.Success)
 		}
-	} else {
-		if history.Prize != "" {
+	} else { //单词抽奖
+		if history != nil && history.Prize != "" {
 			return strings.NewReplacer("%prize%", history.Prize, "%code%", history.Code).Replace(reply.Success)
 		}
 	}
@@ -125,13 +125,16 @@ func doReplyLucky(reply *dao.ReplyModel) string {
 		}
 	}
 	if luck.Name != "" {
-		dao.GetPrizeHistoryServiceW().Insert(&dao.PrizeHistoryModel{
+		prizeHistory := &dao.PrizeHistoryModel{
 			ActivityId: reply.ActivityId,
 			Wuid:       wxUser.Id,
 			Prize:      luck.Name,
-			Code:       prize.Code,
 			Level:      luck.Level,
-		})
+		}
+		if prize != nil {
+			prizeHistory.Code = prize.Code
+		}
+		dao.GetPrizeHistoryServiceW().Insert(prizeHistory)
 	}
 	return strings.NewReplacer("%prize%", luck.Name, "%code%", prize.Code).Replace(reply.Success)
 }

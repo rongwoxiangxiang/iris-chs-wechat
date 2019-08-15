@@ -23,5 +23,7 @@ func textMsgHandler(ctx *core.Context) {
 	if reply != nil && reply.Success != "" {
 		resp := responseTextAndClick(reply, msg.MsgHeader)
 		responseMsg(ctx, resp)
+	} else {
+		defaultTextMsgHandler(ctx)
 	}
 }

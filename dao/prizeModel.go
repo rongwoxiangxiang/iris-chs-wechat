@@ -14,17 +14,17 @@ type PrizeModel struct {
 	Level      int8
 	Used       int8
 	CreatedAt  time.Time
-	UpdatedAt  time.Time
 }
 
 func (this *PrizeModel) TableName() string {
 	return "prizes"
 }
 
-func (this *PrizeModel) ChooseOneUsedPrize(activityId int64, level int8, idGt int64) (prize *PrizeModel, err error) {
+func (this *PrizeModel) ChooseOneUsedPrize(activityId int64, level int8, idGt int64) (*PrizeModel, error) {
 	if idGt > 0 {
 		config.GetDbR(APP_DB_READ).Where("id >= ?", idGt)
 	}
+	prize := new(PrizeModel)
 	has, err := config.GetDbR(APP_DB_READ).Where("activity_id = ? AND level = ? AND used = ?", activityId, level, common.NO_VALUE).Get(prize)
 	if err != nil || has == false {
 		return nil, common.ErrDataUnExist
@@ -37,7 +37,7 @@ func (this *PrizeModel) ChooseOneUsedPrize(activityId int64, level int8, idGt in
 	if err != nil {
 		return nil, common.ErrDataUpdate
 	}
-	return
+	return prize, nil
 }
 
 func (this *PrizeModel) Insert(prize *PrizeModel) (int64, error) {

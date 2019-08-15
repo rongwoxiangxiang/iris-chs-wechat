@@ -23,7 +23,7 @@ func (this *ActivityModel) TableName() string {
 	return "activities"
 }
 
-func (this *ActivityModel) GetById(id int64) (activity *ActivityModel) {
+func (this *ActivityModel) GetById(id int64) *ActivityModel {
 	if id != 0 {
 		activity := new(ActivityModel)
 		activity.Id = id

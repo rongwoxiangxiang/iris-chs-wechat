@@ -20,8 +20,8 @@ func (this *PrizeHistoryModel) TableName() string {
 	return "prize_history"
 }
 
+//取最后一条领取记录
 func (this *PrizeHistoryModel) GetByActivityWuId(activityId, wuid int64) (*PrizeHistoryModel, error) {
-
 	history := new(PrizeHistoryModel)
 	history.Wuid = wuid
 	history.ActivityId = activityId

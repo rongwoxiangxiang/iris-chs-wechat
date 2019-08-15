@@ -5,6 +5,7 @@ import (
 	"crypto/sha1"
 	"encoding/hex"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"sort"
 	"strconv"
@@ -23,11 +24,12 @@ func main() {
 		"<FromUserName><![CDATA[ol0Xm1aADAb4H-s30_RPjmcmU96g]]></FromUserName>" +
 		"<CreateTime>" + timestamp + "</CreateTime>" +
 		"<MsgType><![CDATA[text]]></MsgType>" +
-		"<Content><![CDATA[123]]></Content>" +
+		"<Content><![CDATA[抽个奖]]></Content>" +
 		"<MsgId>22347068330549091</MsgId>" +
 		"</xml>"
-	req, err := http.Post(requestUrl, "", strings.NewReader(requestStr))
-	fmt.Println(req, err)
+	resp, err := http.Post(requestUrl, "", strings.NewReader(requestStr))
+	body, err := ioutil.ReadAll(resp.Body)
+	fmt.Println(string(body), err)
 }
 
 func sign(token, timestamp, nonce string) (signature string) {

@@ -40,18 +40,18 @@ func (this *CheckinModel) ListByWid(wid int64) (lotteries []*CheckinModel) {
  * @Param id Wuid
  * @return CheckinModel,error
  */
-func (this *CheckinModel) GetCheckinInfoByActivityIdAndWuid(activityId, wuid int64) (checkin *CheckinModel, err error) {
+func (this *CheckinModel) GetCheckinInfoByActivityIdAndWuid(activityId, wuid int64) (*CheckinModel, error) {
 	if activityId == 0 || wuid == 0 {
-		err = common.ErrDataGet
-		return
+		return nil, common.ErrDataGet
 	}
+	checkin := new(CheckinModel)
 	checkin.ActivityId = activityId
 	checkin.Wuid = wuid
 	has, err := config.GetDbR(APP_DB_READ).Get(checkin)
 	if !has || err != nil {
 		return nil, err
 	}
-	return
+	return checkin, nil
 }
 
 /**
@@ -62,19 +62,23 @@ func (this *CheckinModel) GetCheckinInfoByActivityIdAndWuid(activityId, wuid int
  * @Param id Wid
  * @return CheckinModel,error
  */
-func (this *CheckinModel) GetCheckinByActivityWuid(activityId, wuid int64) (checkin *CheckinModel, err error) {
+func (this *CheckinModel) GetCheckinByActivityWuid(activityId, wuid int64) (*CheckinModel, error) {
 	if activityId == 0 || wuid == 0 {
 		return nil, common.ErrDataGet
 	}
+	checkin := new(CheckinModel)
 	checkin.ActivityId = activityId
 	checkin.Wuid = wuid
-	has, err := config.GetDbR(APP_DB_READ).Get(&checkin)
+	has, err := config.GetDbR(APP_DB_READ).Get(checkin)
 	if err != nil {
 		return nil, common.ErrDataGet
 	} else if !has {
-		return nil, common.ErrDataNoExist
+		_, err = this.Insert(checkin)
+		if err != nil {
+			return nil, common.ErrDataGet
+		}
 	}
-	return
+	return checkin, nil
 }
 
 func (this *CheckinModel) Insert(checkin *CheckinModel) (int64, error) {

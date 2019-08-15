@@ -69,7 +69,7 @@ func (this *LotteryModel) Luck(wid, activityId int64) (lottery *LotteryModel, er
 		return nil, common.ErrLuckFinal
 	}
 
-	if lottery.Id == 0 {
+	if lottery == nil {
 		return nil, common.ErrLuckFail
 	}
 	claimedNum := lottery.ClaimedNum
@@ -89,7 +89,7 @@ func (this *LotteryModel) List(wid, activityId int64) (lotteries []*LotteryModel
 	if activityId == 0 || wid == 0 {
 		return nil
 	}
-	err := config.GetDbR(APP_DB_READ).Where("wid = ? and activity_id = ?", wid, activityId).Find(&lotteries)
+	err := config.GetDbR(APP_DB_READ).Where("wid = ? and activity_id = ?", wid, activityId).OrderBy("probability desc").Find(&lotteries)
 	if err != nil {
 		lotteries = nil
 	}
