@@ -37,6 +37,21 @@ func defaultEventHandler(ctx *core.Context) {
 	ctx.NoneResponse()
 }
 
+func subscribeHandler(ctx *core.Context) {
+	log.Printf("收到关注事件:\n%s\n", ctx.MsgPlaintext)
+	reply := dao.GetReplyServiceR().FindOne(&dao.ReplyModel{Wid: wxUser.Wid, Alias: string(ctx.MixedMsg.EventType)})
+	if reply.Success != "" {
+		resp := response.NewText(ctx.MixedMsg.FromUserName, ctx.MixedMsg.ToUserName, ctx.MixedMsg.CreateTime, reply.Success)
+		responseMsg(ctx, resp)
+	}
+}
+
+func unsubscribeHandler(ctx *core.Context) {
+	log.Printf("收到取关事件:\n%s\n", ctx.MsgPlaintext)
+	//TODO
+	ctx.NoneResponse()
+}
+
 func defaultTextMsgHandler(ctx *core.Context) {
 	log.Printf("AI智能闲聊:\n%s\n", ctx.MsgPlaintext)
 	msg := request.GetText(ctx.MixedMsg)

@@ -23,6 +23,8 @@ func init() {
 	mux.DefaultEventHandleFunc(defaultEventHandler)
 	mux.MsgHandleFunc(request.MsgTypeText, textMsgHandler)
 	mux.EventHandleFunc(menu.EventTypeClick, menuClickEventHandler)
+	mux.EventHandleFunc(request.EventTypeSubscribe, subscribeHandler)
+	mux.EventHandleFunc(request.EventTypeUnsubscribe, unsubscribeHandler)
 	msgServers = make(map[string]*core.Server)
 	wechats = make(map[string]int64)
 }
