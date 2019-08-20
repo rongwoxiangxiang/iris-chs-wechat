@@ -41,7 +41,7 @@ func subscribeHandler(ctx *core.Context) {
 	log.Printf("收到关注事件:\n%s\n", ctx.MsgPlaintext)
 	reply := dao.GetReplyServiceR().FindOne(&dao.ReplyModel{Wid: wxUser.Wid, Alias: string(ctx.MixedMsg.EventType)})
 	if reply.Success != "" {
-		resp := response.NewText(ctx.MixedMsg.FromUserName, ctx.MixedMsg.ToUserName, ctx.MixedMsg.CreateTime, reply.Success)
+		resp := responseTextAndClick(reply, ctx.MixedMsg.MsgHeader)
 		responseMsg(ctx, resp)
 	}
 }
