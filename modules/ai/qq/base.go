@@ -14,6 +14,14 @@ type AiServer interface {
 	ToMap() map[string]string
 }
 
+type Answer struct {
+	ErrCode  int      `json:"ret"`
+	Msg      string   `json:"msg"`
+	DataJson DataJson `json:"data"`
+}
+
+type DataJson interface{}
+
 func GetRequestBody(ai AiServer) string {
 	params := ai.ToMap()
 	app_key, ok := params["app_key"]

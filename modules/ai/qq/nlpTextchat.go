@@ -1,7 +1,6 @@
 package qq
 
 import (
-	"chs/modules/ai/qq/pojo"
 	"chs/modules/ai/qq/util"
 	"log"
 )
@@ -10,7 +9,7 @@ const nlpTextchatUrl = "https://api.ai.qq.com/fcgi-bin/nlp/nlp_textchat"
 
 type AiNlpTextchat struct {
 	config   *Configuration
-	answer   pojo.Answer
+	answer   Answer
 	session  string
 	question string
 }
@@ -29,7 +28,7 @@ func NewNlpTextchat(conf ...*Configuration) *AiNlpTextchat {
 		}
 		nlpTextchat = &AiNlpTextchat{
 			config: conf[0],
-			answer: pojo.Answer{},
+			answer: Answer{},
 		}
 	}
 	return nlpTextchat

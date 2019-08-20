@@ -1,7 +1,7 @@
 package qq
 
 import (
-	"chs/modules/ai/qq/pojo"
+	"chs/modules/ai/qq"
 	"chs/modules/ai/qq/util"
 	"log"
 )
@@ -9,8 +9,8 @@ import (
 const nlpTextchatUrl = "https://api.ai.qq.com/fcgi-bin/nlp/nlp_textchat"
 
 type AiNlpTextchat struct {
-	config   *Configuration
-	answer   pojo.Answer
+	config   *qq.Configuration
+	answer   qq.Answer
 	session  string
 	question string
 }
@@ -22,14 +22,14 @@ type AiNlpTextchat struct {
 
 var nlpTextchat *AiNlpTextchat
 
-func NewNlpTextchat(conf ...*Configuration) *AiNlpTextchat {
+func NewNlpTextchat(conf ...*qq.Configuration) *AiNlpTextchat {
 	if nlpTextchat == nil {
 		if conf == nil {
-			conf[0] = DefaultConfiguration()
+			conf[0] = qq.DefaultConfiguration()
 		}
 		nlpTextchat = &AiNlpTextchat{
 			config: conf[0],
-			answer: pojo.Answer{},
+			answer: qq.Answer{},
 		}
 	}
 	return nlpTextchat
@@ -53,7 +53,7 @@ func (this *AiNlpTextchat) Question(question, session string) *AiNlpTextchat {
 }
 
 func (this *AiNlpTextchat) Answer() string {
-	requestBody := GetRequestBody(this)
+	requestBody := qq.GetRequestBody(this)
 	err := util.HttpPostJSON(nlpTextchatUrl, requestBody, &this.answer)
 	if err != nil || this.answer.ErrCode != 0 {
 		log.Printf("QQ Ai request err :%v answer {%v}", err, this.answer)
