@@ -3,6 +3,7 @@ package util
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"strings"
 )
@@ -13,13 +14,13 @@ func HttpPostJSON(requestUrl string, requestBody string, response interface{}) e
 		strings.NewReader(requestBody),
 	)
 	if err != nil {
-		fmt.Printf("qq ai server error: %v", err)
+		log.Printf("qq ai server error: %v", err)
 		return err
 	}
 	defer httpResp.Body.Close()
 	if httpResp.StatusCode != http.StatusOK {
 		return fmt.Errorf("http.Status: %s", httpResp.Status)
 	}
-	fmt.Println(httpResp.Body)
+	log.Println(httpResp.Body)
 	return json.NewDecoder(httpResp.Body).Decode(response)
 }

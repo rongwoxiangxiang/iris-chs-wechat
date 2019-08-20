@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"sort"
 	"strconv"
@@ -29,7 +30,7 @@ func main() {
 		"</xml>"
 	resp, err := http.Post(requestUrl, "", strings.NewReader(requestStr))
 	body, err := ioutil.ReadAll(resp.Body)
-	fmt.Println(string(body), err)
+	log.Println(string(body), err)
 }
 
 func sign(token, timestamp, nonce string) (signature string) {

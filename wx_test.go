@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"sort"
 	"strconv"
@@ -31,7 +32,7 @@ func BenchmarkWx(b *testing.B) {
 			"</xml>"
 		resp, err := http.Post(requestUrl, "", strings.NewReader(requestStr))
 		body, err := ioutil.ReadAll(resp.Body)
-		fmt.Println(string(body), err)
+		log.Println(string(body), err)
 	}
 }
 

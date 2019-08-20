@@ -6,7 +6,7 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"encoding/hex"
-	"fmt"
+	"log"
 	"strings"
 )
 
@@ -25,7 +25,7 @@ func (a *AesCryptor) Encrypt(data string) string {
 	content := PKCS5Padding([]byte(data), aesBlockEncrypter.BlockSize())
 	encrypted := make([]byte, len(content))
 	if err != nil {
-		fmt.Println("ase util err", err.Error())
+		log.Println("ase util err", err.Error())
 		return ""
 	}
 	aesEncrypter := cipher.NewCBCEncrypter(aesBlockEncrypter, a.iv)
@@ -41,13 +41,13 @@ func (a *AesCryptor) Decrypt(src string) (string, error) {
 	}
 	aesBlockDecrypter, err := aes.NewCipher(a.key)
 	if err != nil {
-		fmt.Println("ase util decrypt aesBlockDecrypter err", err.Error())
+		log.Println("ase util decrypt aesBlockDecrypter err", err.Error())
 		return "", err
 	}
 	var encryptByt []byte
 	encryptByt, err = hex.DecodeString(src)
 	if err != nil {
-		fmt.Println("ase util decrypt encryptByt err", err.Error())
+		log.Println("ase util decrypt encryptByt err", err.Error())
 		return "", err
 	}
 	decrypted := make([]byte, len(encryptByt))
