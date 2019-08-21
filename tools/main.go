@@ -1,10 +1,13 @@
 package main
 
 import (
+	"chs/config"
+	"chs/dao"
 	"chs/util"
 	"crypto/sha1"
 	"encoding/hex"
 	"fmt"
+	"github.com/pelletier/go-toml"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -15,6 +18,21 @@ import (
 )
 
 func main() {
+	//wx()
+	redis()
+}
+
+type ss struct {
+	Id, No int
+}
+
+func redis() {
+	config.InitConfig()
+	config.InitStoreDb(config.Conf.Get("source").(*toml.Tree))
+	dao.GetReplyServiceR().GetById(1)
+}
+
+func wx() {
 	timestamp := strconv.FormatInt(time.Now().Unix(), 10)
 	nonce := util.GetRandomString(8)
 	openid := "ol0Xm1aADAb4H-s30_RPjmcmU96g"

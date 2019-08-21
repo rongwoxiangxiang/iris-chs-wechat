@@ -21,6 +21,5 @@ func HttpPostJSON(requestUrl string, requestBody string, response interface{}) e
 	if httpResp.StatusCode != http.StatusOK {
 		return fmt.Errorf("http.Status: %s", httpResp.Status)
 	}
-	log.Println(httpResp.Body)
 	return json.NewDecoder(httpResp.Body).Decode(response)
 }

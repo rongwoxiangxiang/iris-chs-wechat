@@ -26,11 +26,16 @@ func (this *ActivityModel) TableName() string {
 func (this *ActivityModel) GetById(id int64) *ActivityModel {
 	if id != 0 {
 		activity := new(ActivityModel)
+		config.CacheGetStruct(this.TableName()+string(id), activity)
+		if activity != nil && activity.Id > 0 {
+			return activity
+		}
 		activity.Id = id
 		has, err := config.GetDbR(APP_DB_READ).Get(activity)
 		if has != true || err != nil {
 			return nil
 		}
+		config.CacheSetJson(this.TableName()+string(id), activity, 3600*24*10)
 		return activity
 	}
 	return nil

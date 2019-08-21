@@ -30,12 +30,16 @@ func (r *ReplyModel) TableName() string {
 func (r *ReplyModel) GetById(id int64) *ReplyModel {
 	if id != 0 {
 		user := new(ReplyModel)
-		user.Id = id
-		has, err := config.GetDbR(APP_DB_READ).Get(user)
-		if !has || err != nil {
-			return nil
+		config.CacheGetStruct(r.TableName()+string(id), user)
+		if user != nil && user.Id > 0 {
+			return user
 		}
-		return user
+		user.Id = id
+		has, _ := config.GetDbR(APP_DB_READ).Get(user)
+		if has {
+			config.CacheSetJson(r.TableName()+string(id), user, 3600*24*10)
+			return user
+		}
 	}
 	return nil
 }
