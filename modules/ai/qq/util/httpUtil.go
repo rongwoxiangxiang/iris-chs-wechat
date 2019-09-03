@@ -1,9 +1,9 @@
 package util
 
 import (
+	"chs/config"
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"strings"
 )
@@ -14,7 +14,7 @@ func HttpPostJSON(requestUrl string, requestBody string, response interface{}) e
 		strings.NewReader(requestBody),
 	)
 	if err != nil {
-		log.Printf("qq ai server error: %v", err)
+		config.Logger().Errorf("qq ai server error: %v", err)
 		return err
 	}
 	defer httpResp.Body.Close()

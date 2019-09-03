@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"chs/common"
+	"chs/config"
 	"chs/dao"
 	"github.com/chanxuehong/wechat/mp/core"
 	"github.com/chanxuehong/wechat/mp/menu"
@@ -33,7 +34,7 @@ func Service(ctx iris.Context) {
 	flag := ctx.Params().Get("flag")
 	msgServer := getMsgServer(flag)
 	if msgServer == nil {
-		ctx.Application().Logger().Warn("Wechat service get mp server err wechat flag : %v", flag)
+		config.Logger().Errorf("Wechat service get mp server err wechat flag : %v", flag)
 		return
 	}
 	query := ctx.Request().URL.Query()

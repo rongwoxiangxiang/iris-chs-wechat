@@ -1,6 +1,7 @@
 package ptu
 
 import (
+	"chs/config"
 	"chs/modules/ai/qq"
 	"log"
 )
@@ -32,7 +33,7 @@ func NewFaceAge(conf ...*qq.Configuration) *FaceAge {
 
 func (this *FaceAge) ToMap() map[string]string {
 	if this.image == "" {
-		log.Println("FaceAge cosmetic or image err")
+		config.Logger().Error("FaceAge cosmetic or image err")
 		return nil
 	}
 	config := this.config.ToMap()

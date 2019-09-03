@@ -1,8 +1,8 @@
 package qq
 
 import (
+	"chs/config"
 	"github.com/pelletier/go-toml"
-	"log"
 )
 
 type Configuration struct {
@@ -27,7 +27,7 @@ func DefaultConfiguration() *Configuration {
 func TomlBytes(data []byte) *Configuration {
 	toml, err := toml.LoadBytes(data)
 	if err != nil {
-		log.Printf("QQ ai Configuration with bytes toml err: ", err)
+		config.Logger().Errorf("QQ ai Configuration with bytes toml err: ", err)
 		return nil
 	}
 	return TomlConfiguration(toml)
@@ -36,7 +36,7 @@ func TomlBytes(data []byte) *Configuration {
 func TomlFileToml(filePath string) *Configuration {
 	toml, err := toml.LoadFile(filePath)
 	if err != nil {
-		log.Printf("QQ ai Configuration with bytes toml err: ", err)
+		config.Logger().Errorf("QQ ai Configuration with bytes toml err: ", err)
 		return nil
 	}
 	return TomlConfiguration(toml)
@@ -46,7 +46,7 @@ func TomlConfiguration(tree *toml.Tree) *Configuration {
 	app_id := tree.Get("qq.ai.app_id")
 	app_key := tree.Get("qq.ai.app_key")
 	if app_id == nil || app_key == nil {
-		log.Println("QQ ai Configuration with toml tree empty!")
+		config.Logger().Errorf("QQ ai Configuration with toml tree empty!")
 		return nil
 	}
 	return &Configuration{
@@ -57,7 +57,7 @@ func TomlConfiguration(tree *toml.Tree) *Configuration {
 
 func SetConfiguration(app_id, app_key string) *Configuration {
 	if app_id == "" || app_key == "" {
-		log.Println("QQ ai Configuration with toml tree empty!")
+		config.Logger().Errorf("QQ ai Configuration with toml tree empty!")
 		return nil
 	}
 	return &Configuration{

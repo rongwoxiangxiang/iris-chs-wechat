@@ -1,6 +1,7 @@
 package ptu
 
 import (
+	"chs/config"
 	"chs/modules/ai/qq"
 	"log"
 	"strconv"
@@ -34,7 +35,7 @@ func NewFaceDecoration(conf ...*qq.Configuration) *FaceDecoration {
 
 func (this *FaceDecoration) ToMap() map[string]string {
 	if this.image == "" || this.decoration == "" {
-		log.Println("FaceDecoration image or decoration err")
+		config.Logger().Error("FaceDecoration image or decoration err")
 		return nil
 	}
 	config := this.config.ToMap()

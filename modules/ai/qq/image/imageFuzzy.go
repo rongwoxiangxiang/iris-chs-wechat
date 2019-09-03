@@ -1,9 +1,9 @@
 package image
 
 import (
+	"chs/config"
 	"chs/modules/ai/qq"
 	"chs/modules/ai/qq/util"
-	"log"
 )
 
 const imageFuzzyRequestUrl = "https://api.ai.qq.com/fcgi-bin/nlp/nlp_textchat"
@@ -29,7 +29,7 @@ func NewImageFuzzy(conf ...*qq.Configuration) *ImageFuzzy {
 
 func (this *ImageFuzzy) ToMap() map[string]string {
 	if this.ImageStruct.image == "" {
-		log.Println("ImageFuzzy image err")
+		config.Logger().Errorf("ImageFuzzy image err")
 		return nil
 	}
 	config := this.ImageStruct.config.ToMap()
@@ -47,7 +47,7 @@ func (this *ImageFuzzy) Image() (float64, bool) {
 	requestBody := qq.GetRequestBody(this)
 	err := util.HttpPostJSON(imageFuzzyRequestUrl, requestBody, answer)
 	if err != nil || answer.ErrCode != 0 {
-		log.Printf("QQ Ai ImageFuzzy request err :%v answer {%v}", err, answer)
+		config.Logger().Errorf("QQ Ai ImageFuzzy request err :%v answer {%v}", err, answer)
 		return 0, true
 	}
 	//TO FIX

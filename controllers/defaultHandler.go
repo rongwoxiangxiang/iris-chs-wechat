@@ -8,7 +8,6 @@ import (
 	"github.com/chanxuehong/wechat/mp/message/callback/request"
 	"github.com/chanxuehong/wechat/mp/message/callback/response"
 	"github.com/chanxuehong/wechat/mp/user"
-	"log"
 	"time"
 )
 
@@ -28,17 +27,17 @@ func onStart(ctx *core.Context) {
 }
 
 func defaultMsgHandler(ctx *core.Context) {
-	log.Printf("收到消息:\n%s\n", ctx.MsgPlaintext)
+	config.Logger().Printf("收到消息:\n%s\n", ctx.MsgPlaintext)
 	ctx.NoneResponse()
 }
 
 func defaultEventHandler(ctx *core.Context) {
-	log.Printf("收到事件:\n%s\n", ctx.MsgPlaintext)
+	config.Logger().Printf("收到事件:\n%s\n", ctx.MsgPlaintext)
 	ctx.NoneResponse()
 }
 
 func subscribeHandler(ctx *core.Context) {
-	log.Printf("收到关注事件:\n%s\n", ctx.MsgPlaintext)
+	config.Logger().Printf("收到关注事件:\n%s\n", ctx.MsgPlaintext)
 	reply := dao.GetReplyServiceR().FindOne(&dao.ReplyModel{Wid: wxUser.Wid, Alias: string(ctx.MixedMsg.EventType)})
 	if reply.Success != "" {
 		resp := responseTextAndClick(reply, ctx.MixedMsg.MsgHeader)
@@ -47,13 +46,13 @@ func subscribeHandler(ctx *core.Context) {
 }
 
 func unsubscribeHandler(ctx *core.Context) {
-	log.Printf("收到取关事件:\n%s\n", ctx.MsgPlaintext)
+	config.Logger().Printf("收到取关事件:\n%s\n", ctx.MsgPlaintext)
 	//TODO
 	ctx.NoneResponse()
 }
 
 func defaultTextMsgHandler(ctx *core.Context) {
-	log.Printf("AI智能闲聊:\n%s\n", ctx.MsgPlaintext)
+	config.Logger().Printf("AI智能闲聊:\n%s\n", ctx.MsgPlaintext)
 	msg := request.GetText(ctx.MixedMsg)
 	answer := qq.NewNlpTextchat(qq.TomlConfiguration(config.Conf)).Question(msg.Content, msg.FromUserName).Answer()
 	if answer != "" {

@@ -1,9 +1,9 @@
 package ptu
 
 import (
+	"chs/config"
 	"chs/modules/ai/qq"
 	"chs/modules/ai/qq/util"
-	"log"
 )
 
 type Ptu struct {
@@ -25,7 +25,7 @@ func getProcessedImg(requestUrl, requestBody string) string {
 	answer := new(Answer)
 	err := util.HttpPostJSON(requestUrl, requestBody, answer)
 	if err != nil || answer.ErrCode != 0 {
-		log.Printf("QQ Ai Img request err :%v Image {%v}", err, answer)
+		config.Logger().Errorf("QQ Ai Img request err :%v Image {%v}", err, answer)
 		return ""
 	}
 	return answer.DataJson.Image

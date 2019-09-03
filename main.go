@@ -2,7 +2,6 @@ package main
 
 import (
 	"chs/bootstrap"
-	"github.com/go-redis/redis"
 	"log"
 )
 

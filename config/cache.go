@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gomodule/redigo/redis"
-	"log"
+	"github.com/pelletier/go-toml"
 	"time"
 )
 
@@ -20,6 +20,20 @@ type RedisConfig struct {
 
 var redisConnPool *redis.Pool
 
+func DefaultRedisConfig() RedisConfig {
+	return RedisConfig{Host: "127.0.0.1", Port: "6379"}
+}
+
+func InitRedis(configToml *toml.Tree) {
+	redisConfig := DefaultRedisConfig()
+	if configToml != nil {
+		if err := configToml.Unmarshal(&redisConfig); err != nil {
+			logger.Fatalf("Init redis err:{}", err)
+		}
+	}
+	redisConnPool = InitRedisConnPool(&redisConfig)
+}
+
 func CacheSet(key string, val interface{}, ttl int) error {
 	_, err := GetRedisClient().Do("SET", key, val, "EX", ttl)
 	return err
@@ -34,11 +48,7 @@ func CacheSetJson(key string, val interface{}, ttl int) error {
 }
 
 func CacheGetbytes(key string) []byte {
-	val, err := redis.Bytes(GetRedisClient().Do("GET", key))
-	if err != nil {
-		log.Println("cache: get json key : {}, err:{}", key, err)
-		return nil
-	}
+	val, _ := redis.Bytes(GetRedisClient().Do("GET", key))
 	return val
 }
 
@@ -52,14 +62,14 @@ func CacheGetStruct(key string, struct2 interface{}) {
 		err = json.Unmarshal(byts, struct2)
 	}
 	if err != nil {
-		log.Println("cache: get struct key : {}, err:{}", key, err)
+		logger.Warn("cache: get struct key : {}, err:{}", key, err)
 	}
 }
 
 func CacheGetString(key string) string {
 	val, err := redis.String(GetRedisClient().Do("GET", key))
 	if err != nil {
-		log.Println("cache err when get key : {},err: {}", key, err)
+		logger.Warnf("cache err when get key : {},err: {}", key, err)
 		return ""
 	}
 	return val
@@ -68,16 +78,12 @@ func CacheGetString(key string) string {
 func CacheDelete(key string) error {
 	_, err := GetRedisClient().Do("DEL", key)
 	if err != nil {
-		log.Println("cache err when get key :", key)
+		logger.Warnf("cache err when get key :", key)
 	}
 	return err
 }
 
 func GetRedisClient() redis.Conn {
-	if redisConnPool == nil {
-		redisConfig := &RedisConfig{Host: "127.0.0.1", Port: "6379"}
-		redisConnPool = InitRedisConnPool(redisConfig)
-	}
 	return redisConnPool.Get()
 }
 

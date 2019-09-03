@@ -1,9 +1,9 @@
 package image
 
 import (
+	"chs/config"
 	"chs/modules/ai/qq"
 	"chs/modules/ai/qq/util"
-	"log"
 )
 
 const imageToTextRequestUrl = "https://api.ai.qq.com/fcgi-bin/nlp/nlp_textchat"
@@ -30,7 +30,7 @@ func NewImageToText(conf ...*qq.Configuration) *ImageToText {
 
 func (this *ImageToText) ToMap() map[string]string {
 	if this.ImageStruct.image == "" || this.SessionId == "" {
-		log.Println("ImageToText image or SessionId empty")
+		config.Logger().Error("ImageToText image or SessionId empty")
 		return nil
 	}
 	config := this.ImageStruct.config.ToMap()
@@ -50,7 +50,7 @@ func (this *ImageToText) Image() string {
 	requestBody := qq.GetRequestBody(this)
 	err := util.HttpPostJSON(imageFuzzyRequestUrl, requestBody, answer)
 	if err != nil || answer.ErrCode != 0 {
-		log.Printf("QQ Ai ImageToText request err :%v answer {%v}", err, answer)
+		config.Logger().Errorf("QQ Ai ImageToText request err :%v answer {%v}", err, answer)
 		return ""
 	}
 	return answer.DataJson.(map[string]interface{})["text"].(string)

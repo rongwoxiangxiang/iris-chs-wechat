@@ -3,6 +3,7 @@ package dao
 import (
 	"chs/common"
 	"chs/config"
+	"strconv"
 	"time"
 )
 
@@ -30,14 +31,14 @@ func (r *ReplyModel) TableName() string {
 func (r *ReplyModel) GetById(id int64) *ReplyModel {
 	if id != 0 {
 		user := new(ReplyModel)
-		config.CacheGetStruct(r.TableName()+string(id), user)
+		config.CacheGetStruct(r.TableName()+strconv.FormatInt(id, 10), user)
 		if user != nil && user.Id > 0 {
 			return user
 		}
 		user.Id = id
 		has, _ := config.GetDbR(APP_DB_READ).Get(user)
 		if has {
-			config.CacheSetJson(r.TableName()+string(id), user, 3600*24*10)
+			config.CacheSetJson(r.TableName()+strconv.FormatInt(id, 10), user, 3600*24*10)
 			return user
 		}
 	}

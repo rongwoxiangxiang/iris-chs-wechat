@@ -1,8 +1,8 @@
 package qq
 
 import (
+	"chs/config"
 	"chs/modules/ai/qq/util"
-	"log"
 )
 
 const nlpTextchatUrl = "https://api.ai.qq.com/fcgi-bin/nlp/nlp_textchat"
@@ -36,7 +36,7 @@ func NewNlpTextchat(conf ...*Configuration) *AiNlpTextchat {
 
 func (this *AiNlpTextchat) ToMap() map[string]string {
 	if this.session == "" || this.question == "" {
-		log.Println("AiNlpTextchat question or session err")
+		config.Logger().Println("AiNlpTextchat question or session err")
 		return nil
 	}
 	config := this.config.ToMap()
@@ -55,7 +55,7 @@ func (this *AiNlpTextchat) Answer() string {
 	requestBody := GetRequestBody(this)
 	err := util.HttpPostJSON(nlpTextchatUrl, requestBody, &this.answer)
 	if err != nil || this.answer.ErrCode != 0 {
-		log.Printf("QQ Ai request err :%v answer {%v}", err, this.answer)
+		config.Logger().Printf("QQ Ai request err :%v answer {%v}", err, this.answer)
 		return ""
 	}
 	answerData := this.answer.DataJson.(map[string]interface{})

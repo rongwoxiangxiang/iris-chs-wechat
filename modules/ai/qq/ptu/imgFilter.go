@@ -1,8 +1,8 @@
 package ptu
 
 import (
+	"chs/config"
 	"chs/modules/ai/qq"
-	"log"
 	"strconv"
 )
 
@@ -31,7 +31,7 @@ func NewImgfilter(conf ...*qq.Configuration) *Imgfilter {
 
 func (this *Imgfilter) ToMap() map[string]string {
 	if this.filter == "" || this.image == "" {
-		log.Println("Imgfilter filter or image err")
+		config.Logger().Error("Imgfilter filter or image err")
 		return nil
 	}
 	config := this.config.ToMap()

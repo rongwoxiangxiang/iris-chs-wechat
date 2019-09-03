@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"github.com/pelletier/go-toml"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"sort"
 	"strconv"
@@ -18,16 +17,11 @@ import (
 )
 
 func main() {
-	//wx()
-	redis()
-}
-
-type ss struct {
-	Id, No int
+	wx()
+	//redis()
 }
 
 func redis() {
-	config.InitConfig()
 	config.InitStoreDb(config.Conf.Get("source").(*toml.Tree))
 	dao.GetReplyServiceR().GetById(1)
 }
@@ -47,8 +41,10 @@ func wx() {
 		"<MsgId>22347068330549091</MsgId>" +
 		"</xml>"
 	resp, err := http.Post(requestUrl, "", strings.NewReader(requestStr))
-	body, err := ioutil.ReadAll(resp.Body)
-	log.Println(string(body), err)
+	if err == nil {
+		body, err := ioutil.ReadAll(resp.Body)
+		config.Logger().Info(string(body), err)
+	}
 }
 
 func sign(token, timestamp, nonce string) (signature string) {

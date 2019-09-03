@@ -2,6 +2,7 @@ package dao
 
 import (
 	"chs/config"
+	"strconv"
 	"time"
 )
 
@@ -26,7 +27,7 @@ func (this *ActivityModel) TableName() string {
 func (this *ActivityModel) GetById(id int64) *ActivityModel {
 	if id != 0 {
 		activity := new(ActivityModel)
-		config.CacheGetStruct(this.TableName()+string(id), activity)
+		config.CacheGetStruct(this.TableName()+strconv.FormatInt(id, 10), activity)
 		if activity != nil && activity.Id > 0 {
 			return activity
 		}
@@ -35,7 +36,7 @@ func (this *ActivityModel) GetById(id int64) *ActivityModel {
 		if has != true || err != nil {
 			return nil
 		}
-		config.CacheSetJson(this.TableName()+string(id), activity, 3600*24*10)
+		config.CacheSetJson(this.TableName()+strconv.FormatInt(id, 10), activity, 3600*24*10)
 		return activity
 	}
 	return nil
