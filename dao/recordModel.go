@@ -5,6 +5,16 @@ import (
 	"time"
 )
 
+type RecordInterfaceR interface {
+	GetById(int64) *RecordModel
+	LimitUnderWidList(wid int64, index int, limit int) []*RecordModel
+	LimitUnderWuidList(wuid int64, index int, limit int) []*RecordModel
+}
+
+type RecordInterfaceW interface {
+	Insert(*RecordModel) (int64, error)
+}
+
 type RecordModel struct {
 	Id        int64 `xorm:"pk"`
 	Wid       int64

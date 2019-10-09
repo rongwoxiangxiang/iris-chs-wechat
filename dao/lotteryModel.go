@@ -7,7 +7,15 @@ import (
 	"time"
 )
 
-const MAX_LUCKY_NUM = 10000
+type LotteryInterfaceR interface {
+	List(wid, activityId int64) []*LotteryModel
+}
+
+type LotteryInterfaceW interface {
+	Insert(*LotteryModel) (int64, error)
+	DeleteById(int64) bool
+	Luck(wid, activityId int64) (*LotteryModel, error)
+}
 
 type LotteryModel struct {
 	Id          int64

@@ -5,6 +5,18 @@ import (
 	"time"
 )
 
+type WechatInterfaceR interface {
+	GetById(int64) *WechatModel
+	FindByGid(int64) []*WechatModel
+	GetByAppid(string) *WechatModel
+	GetByFlag(string) *WechatModel
+}
+
+type WechatInterfaceW interface {
+	Insert(*WechatModel) (int64, error)
+	DeleteById(int64) bool
+}
+
 type WechatModel struct {
 	Id             int64 `xorm:"pk"`
 	Gid            int64

@@ -1,7 +1,7 @@
 package script
 
 import (
-	"chs/config"
+	_ "chs/config"
 	"chs/modules/elasticsearch"
 	"chs/util"
 	"fmt"
@@ -31,9 +31,9 @@ func (script ScriptFuncs) BashDecryptPhones(args []string) (ret interface{}) {
 	}
 	sheets := f.GetSheetMap()
 	for _, sheet := range sheets {
-		rows, err := f.GetRows(sheet)
+		rows := f.GetRows(sheet)
 		if err == nil {
-			col, _ := excelize.ColumnNumberToName(len(rows[0]) + 2)
+			col, _ := columnNumberToName(len(rows[0]) + 2)
 			for index, row := range rows {
 				phone, _ := util.GetAesCryptor().Decrypt(row[1])
 				f.SetCellStr(sheet, col+strconv.Itoa(index+1), phone)
@@ -44,7 +44,18 @@ func (script ScriptFuncs) BashDecryptPhones(args []string) (ret interface{}) {
 	return
 }
 
+func columnNumberToName(num int) (string, error) {
+	if num < 1 {
+		return "", fmt.Errorf("incorrect column number %d", num)
+	}
+	var col string
+	for num > 0 {
+		col = string((num-1)%26+65) + col
+		num = (num - 1) / 26
+	}
+	return col, nil
+}
+
 func InitEs(args []string) {
-	config.InitConfig()
 	elasticsearch.InitEs()
 }

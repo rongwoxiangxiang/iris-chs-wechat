@@ -28,4 +28,6 @@ const (
 	REPLY_TYPE_CHECKIN = "checkin"
 
 	PLEASE_TRY_AGAIN = "活动太火爆了，请稍后重试"
+
+	MAX_LUCKY_NUM = 10000
 )

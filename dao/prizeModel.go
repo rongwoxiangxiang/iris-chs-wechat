@@ -6,6 +6,17 @@ import (
 	"time"
 )
 
+type PrizeInterfaceR interface {
+	LimitUnderActivityList(activityId int64, index int, limit int) []*PrizeModel
+}
+
+type PrizeInterfaceW interface {
+	ChooseOneUsedPrize(activityId int64, level int8, idGt int64) (*PrizeModel, error)
+	Insert(*PrizeModel) (int64, error)
+	InsertBatch([]*PrizeModel) (int64, error)
+	DeleteById(int64) bool
+}
+
 type PrizeModel struct {
 	Id         int64 `xorm:"pk"`
 	Wid        int64

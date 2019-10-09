@@ -6,6 +6,16 @@ import (
 	"time"
 )
 
+type PrizeHistoryInterfaceR interface {
+	GetByActivityWuId(activityId, wuid int64) (*PrizeHistoryModel, error)
+	LimitUnderActivityList(activityId int64, index int, limit int) []*PrizeHistoryModel
+}
+
+type PrizeHistoryInterfaceW interface {
+	Insert(*PrizeHistoryModel) (int64, error)
+	DeleteById(int64) bool
+}
+
 type PrizeHistoryModel struct {
 	Id         int64 `xorm:"pk"`
 	ActivityId int64

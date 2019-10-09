@@ -6,6 +6,17 @@ import (
 	"time"
 )
 
+type ActivityInterfaceR interface {
+	GetById(int64) *ActivityModel
+	LimitUnderWidList(index, limit, wid int) []*ActivityModel
+}
+
+type ActivityInterfaceW interface {
+	Insert(*ActivityModel) (int64, error)
+	Update(*ActivityModel) (int64, error)
+	DeleteById(int64) bool
+}
+
 type ActivityModel struct {
 	Id           int64 `xorm:"pk"`
 	Wid          int64
