@@ -34,7 +34,7 @@ func Service(ctx iris.Context) {
 	flag := ctx.Params().Get("flag")
 	msgServer := getMsgServer(flag)
 	if msgServer == nil {
-		config.Logger().Errorf("Wechat service get mp server err wechat flag : %v", flag)
+		config.Logger().Errorf("Wechat service get mp server err wechat flag :", flag)
 		return
 	}
 	query := ctx.Request().URL.Query()

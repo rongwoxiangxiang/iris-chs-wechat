@@ -32,7 +32,7 @@ func wx() {
 	openid := "ol0Xm1aADAb4H-s30_RPjmcmU96g"
 	signature := sign("chens", timestamp, nonce)
 
-	requestUrl := fmt.Sprintf("http://localhost:8888/service/chensss?signature=%s&timestamp=%s&nonce=%s&openid=%s", signature, timestamp, nonce, openid)
+	requestUrl := fmt.Sprintf("http://localhost:8877/service/chensss?signature=%s&timestamp=%s&nonce=%s&openid=%s", signature, timestamp, nonce, openid)
 	requestStr := "<xml><ToUserName><![CDATA[gh_008302fc091b]]></ToUserName>" +
 		"<FromUserName><![CDATA[ol0Xm1aADAb4H-s30_RPjmcmU96g]]></FromUserName>" +
 		"<CreateTime>" + timestamp + "</CreateTime>" +

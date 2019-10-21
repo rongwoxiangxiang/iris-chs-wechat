@@ -7,7 +7,6 @@ import (
 
 type WechatInterfaceR interface {
 	GetById(int64) *WechatModel
-	FindByGid(int64) []*WechatModel
 	GetByAppid(string) *WechatModel
 	GetByFlag(string) *WechatModel
 }
@@ -19,7 +18,6 @@ type WechatInterfaceW interface {
 
 type WechatModel struct {
 	Id             int64 `xorm:"pk"`
-	Gid            int64
 	Name           string
 	Appid          string
 	Appsecret      string
@@ -88,15 +86,4 @@ func (w *WechatModel) GetByFlag(flag string) *WechatModel {
 		return nil
 	}
 	return wechat
-}
-
-func (w *WechatModel) FindByGid(gid int64) (wechats []*WechatModel) {
-	if gid == 0 {
-		return nil
-	}
-	err := config.GetDbR(APP_DB_READ).Where("gid = ?", gid).Find(&wechats)
-	if err != nil {
-		return nil
-	}
-	return wechats
 }

@@ -45,6 +45,7 @@ func (this *ActivityModel) GetById(id int64) *ActivityModel {
 		activity.Id = id
 		has, err := config.GetDbR(APP_DB_READ).Get(activity)
 		if has != true || err != nil {
+			config.Logger().Error("ActivityModel GetById [%d] empty or err:", id, err)
 			return nil
 		}
 		config.CacheSetJson(this.TableName()+strconv.FormatInt(id, 10), activity, 3600*24*10)
@@ -59,6 +60,7 @@ func (this *ActivityModel) LimitUnderWidList(index, limit, wid int) (activities 
 	}
 	err := config.GetDbR(APP_DB_READ).Where("wid = ?", wid).Limit(limit, (index-1)*limit).Find(&activities)
 	if err != nil {
+		config.Logger().Error("ActivityModel LimitUnderWidList err:", err)
 		return nil
 	}
 	return activities
@@ -78,6 +80,7 @@ func (this *ActivityModel) DeleteById(id int64) bool {
 	}
 	_, err := config.GetDbW(APP_DB_WRITE).Id(id).Unscoped().Delete(&ActivityModel{})
 	if err != nil {
+		config.Logger().Error("ActivityModel DeleteById err:", err)
 		return false
 	}
 	return true
