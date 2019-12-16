@@ -1,13 +1,17 @@
 package script
 
 import (
+	"bufio"
 	_ "chs/config"
 	"chs/modules/elasticsearch"
 	"chs/util"
 	"fmt"
 	"github.com/360EntSecGroup-Skylar/excelize"
+	"io"
+	"os"
 	"reflect"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -23,7 +27,38 @@ type ScriptFuncs struct {
 	startTime time.Time
 }
 
-func (script ScriptFuncs) BashDecryptPhones(args []string) (ret interface{}) {
+func (script ScriptFuncs) BashDecryptPhonesTxt(args []string) (ret interface{}) {
+	file, err := os.OpenFile(args[0], os.O_RDWR, 0666)
+	file2, err := os.OpenFile("res.txt", os.O_CREATE|os.O_RDWR, 0777)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	buf := bufio.NewReader(file)
+	for {
+		line, err := buf.ReadString('\n')
+		line = strings.TrimSpace(line)
+		phone, err2 := util.GetAesCryptor().Decrypt(line)
+		if err2 != nil {
+			phone = err2.Error()
+		}
+		file2.WriteString(phone + "\n")
+		fmt.Println(line + "               " + phone)
+		if err != nil {
+			if err == io.EOF {
+				fmt.Println("File read ok!")
+				break
+			} else {
+				fmt.Println("Read file error!", err)
+				return
+			}
+		}
+	}
+	return
+}
+
+func (script ScriptFuncs) BashDecryptPhonesXls(args []string) (ret interface{}) {
 	f, err := excelize.OpenFile(args[0])
 	if err != nil {
 		fmt.Println(err)

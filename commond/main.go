@@ -8,8 +8,9 @@ import (
 
 var (
 	EXIST_COMMANDS_MAP = map[string]string{
-		"decrypt": "BashDecryptPhones",
-		"init-es": "InitEs",
+		"decrypt":     "BashDecryptPhonesXls",
+		"decrypt-txt": "BashDecryptPhonesTxt",
+		"init-es":     "InitEs",
 	}
 )
 

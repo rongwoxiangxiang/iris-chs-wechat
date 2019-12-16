@@ -117,3 +117,7 @@ func CheckExistFromSlice(arr []interface{}, value interface{}) bool {
 	}
 	return false
 }
+
+func Substr(lens string, index, pos int) string {
+	return ""
+}
